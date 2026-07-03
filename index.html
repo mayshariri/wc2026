@@ -3362,7 +3362,7 @@ const STAGES = {
 };
 let currentStage = 'GS';
 
-function setStage(stage) {
+function setStage(stage, silent = false) {
   currentStage = stage;
   const s = STAGES[stage];
 
@@ -3396,14 +3396,17 @@ function setStage(stage) {
 
   localStorage.setItem('wc2026_stage', stage);
   buildMatchSelect();
-  // Jump to last scored in stage, or first match
-  const stageMatches = MATCHES.filter(m => m.id >= s.ids[0] && m.id <= s.ids[1]);
-  const lastScored = stageMatches.filter(m => scores[m.id]).pop();
-  const firstMatch = stageMatches[0];
-  if (lastScored) currentId = lastScored.id;
-  else if (firstMatch) currentId = firstMatch.id;
-  updateScoreDisplay();
-  render();
+  updateNavButtons();
+  if (!silent) {
+    // Jump to last scored in stage, or first match
+    const stageMatches = MATCHES.filter(m => m.id >= s.ids[0] && m.id <= s.ids[1]);
+    const lastScored = stageMatches.filter(m => scores[m.id]).pop();
+    const firstMatch = stageMatches[0];
+    if (lastScored) currentId = lastScored.id;
+    else if (firstMatch) currentId = firstMatch.id;
+    updateScoreDisplay();
+    render();
+  }
 }
 
 function navMatch(dir) {
@@ -4007,14 +4010,18 @@ async function init() {
   const lastStage = localStorage.getItem('wc2026_stage') || 'GS';
   const lastMatch = parseInt(localStorage.getItem('wc2026_match')) || null;
 
-  setStage(lastStage);
-  if (lastMatch && MATCHES.find(m => m.id === lastMatch)) {
+  setStage(lastStage, true);
+
+  // Override currentId after setStage sets it
+  if (lastMatch) {
     const s = STAGES[lastStage];
-    if (lastMatch >= s.ids[0] && lastMatch <= s.ids[1]) {
+    if (s && lastMatch >= s.ids[0] && lastMatch <= s.ids[1]) {
       currentId = lastMatch;
-      document.getElementById('match-select').value = currentId;
+      const sel = document.getElementById('match-select');
+      if (sel) sel.value = currentId;
     }
   }
+
   updateScoreDisplay();
   updateNavButtons();
   render();
