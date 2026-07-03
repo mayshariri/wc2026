@@ -3623,6 +3623,15 @@ function epSaveAllAndView() {
   }
 }
 
+function epFillAll(matchId, pick) {
+  const block = document.querySelector(`.ep-match-block[data-match="${matchId}"]`);
+  if (!block) return;
+  block.querySelectorAll(`.ep-pick-select[data-match="${matchId}"]`).forEach(sel => {
+    sel.value = pick;
+    epUpdateSelectColor(sel);
+  });
+}
+
 function epToggleMatch(matchId) {
   const block = document.querySelector(`.ep-match-block[data-match="${matchId}"]`);
   if (block) block.classList.toggle('open');
@@ -3728,6 +3737,12 @@ function renderEditPicks() {
       </div>
       <div class="ep-picks-table">
         ${isScored ? '<div style="padding:6px 0 10px;font-size:11px;color:#f59e0b;font-weight:700;">⚠️ This match is already scored — edits here won\'t affect the scoreboard</div>' : ''}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #1e2a45;">
+          <span style="font-size:11px;color:#8892a4;font-weight:700;align-self:center;">All vote:</span>
+          <button onclick="epFillAll(${m.id},'${m.home}')" style="background:#1e2a45;color:${t.accent};border:1px solid ${t.accent};border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">${m.hf} ${m.home}</button>
+          ${!isKnockout(m.id) ? `<button onclick="epFillAll(${m.id},'Draw')" style="background:#1e2a45;color:#f59e0b;border:1px solid #f59e0b;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">🤝 Draw</button>` : ''}
+          <button onclick="epFillAll(${m.id},'${m.away}')" style="background:#1e2a45;color:${t.accent};border:1px solid ${t.accent};border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">${m.af} ${m.away}</button>
+        </div>
         <div class="ep-picks-grid">
           ${PLAYERS.map(p => {
             const val = (PICKS[m.id] && PICKS[m.id][p]) || '';
