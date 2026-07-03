@@ -3536,14 +3536,40 @@ function epSaveMatch(matchId) {
       if (sel.value) toSave.push({ id: `${matchId}_${p}`, match_id: matchId, player: p, pick: sel.value });
     }
   });
-  // Save to Supabase
-  if (toSave.length) {
-    sbFetch('picks', { method: 'POST', body: JSON.stringify(toSave) });
-  }
+  if (toSave.length) sbFetch('picks', { method: 'POST', body: JSON.stringify(toSave) });
   epUpdateProgress();
   buildMatchSelect();
-  currentId = matchId;
-  switchTab('votelock');
+  // Show inline saved confirmation
+  const btn = block.querySelector('.ep-btn-save');
+  const orig = btn.textContent;
+  btn.textContent = '✅ Saved!';
+  btn.style.background = '#27ae60';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+}
+
+function epSaveAllAndView() {
+  // Save all open/filled matches then go to vote lock of the last saved
+  let lastSaved = null;
+  document.querySelectorAll('.ep-match-block').forEach(block => {
+    const matchId = parseInt(block.dataset.match);
+    if (!PICKS[matchId]) PICKS[matchId] = {};
+    const toSave = [];
+    PLAYERS.forEach(p => {
+      const sel = block.querySelector(`.ep-pick-select[data-player="${p}"]`);
+      if (sel && sel.value) {
+        PICKS[matchId][p] = sel.value;
+        toSave.push({ id: `${matchId}_${p}`, match_id: matchId, player: p, pick: sel.value });
+        lastSaved = matchId;
+      }
+    });
+    if (toSave.length) sbFetch('picks', { method: 'POST', body: JSON.stringify(toSave) });
+  });
+  epUpdateProgress();
+  buildMatchSelect();
+  if (lastSaved) {
+    currentId = lastSaved;
+    switchTab('votelock');
+  }
 }
 
 function epToggleMatch(matchId) {
@@ -3667,7 +3693,7 @@ function renderEditPicks() {
           }).join('')}
         </div>
         <div class="ep-save-row">
-          <button class="ep-btn-save" onclick="epSaveMatch(${m.id})">Save & View Vote Lock ↗</button>
+          <button class="ep-btn-save" onclick="epSaveMatch(${m.id})">💾 Save</button>
         </div>
       </div>`;
     container.appendChild(block);
@@ -3859,9 +3885,12 @@ function render() {
         <div class="ep-header">
           <div>
             <div class="ep-title">✏️ Edit Picks</div>
-            <div class="ep-hint">Fill in votes via dropdowns & save · or keep sending Claude screenshots — both work</div>
+            <div class="ep-hint">Fill picks across multiple matches, then Save All</div>
           </div>
-          <button class="btn-download" onclick="epDownload()">⬇️ Download Updated File</button>
+          <div style="display:flex;gap:8px;">
+            <button class="ep-btn-save" onclick="epSaveAllAndView()" style="background:#27ae60;padding:10px 18px;">✅ Save All & View</button>
+            <button class="btn-download" onclick="epDownload()">⬇️ Download</button>
+          </div>
         </div>
         <div class="ep-progress">
           <span class="prog-label">Picks filled</span>
