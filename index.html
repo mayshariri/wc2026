@@ -3394,8 +3394,8 @@ function setStage(stage) {
     activeBtn.classList.add('active');
   }
 
+  localStorage.setItem('wc2026_stage', stage);
   buildMatchSelect();
-  updateNavButtons();
   // Jump to last scored in stage, or first match
   const stageMatches = MATCHES.filter(m => m.id >= s.ids[0] && m.id <= s.ids[1]);
   const lastScored = stageMatches.filter(m => scores[m.id]).pop();
@@ -3413,6 +3413,7 @@ function navMatch(dir) {
   const newIdx = idx + dir;
   if (newIdx < 0 || newIdx >= stageMatches.length) return;
   currentId = stageMatches[newIdx].id;
+  localStorage.setItem('wc2026_match', currentId);
   document.getElementById('match-select').value = currentId;
   updateScoreDisplay();
   updateNavButtons();
@@ -3459,6 +3460,7 @@ function updateScoreDisplay() {
 
 function selectMatch(id) {
   currentId = parseInt(id);
+  localStorage.setItem('wc2026_match', currentId);
   updateScoreDisplay();
   updateNavButtons();
   render();
@@ -4001,7 +4003,18 @@ async function init() {
     }
   } catch(e) { console.warn('Could not load bonus picks from Supabase', e); }
 
-  setStage('GS');
+  // Restore last stage and match
+  const lastStage = localStorage.getItem('wc2026_stage') || 'GS';
+  const lastMatch = parseInt(localStorage.getItem('wc2026_match')) || null;
+
+  setStage(lastStage);
+  if (lastMatch && MATCHES.find(m => m.id === lastMatch)) {
+    const s = STAGES[lastStage];
+    if (lastMatch >= s.ids[0] && lastMatch <= s.ids[1]) {
+      currentId = lastMatch;
+      document.getElementById('match-select').value = currentId;
+    }
+  }
   updateScoreDisplay();
   updateNavButtons();
   render();
