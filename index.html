@@ -3171,7 +3171,7 @@ const PRESET_SCORES = {
   70:{home:3,away:1},
   71:{home:3,away:3},
   72:{home:1,away:3},
-  73:{home:0,away:1},
+  73:{home:0,away:1}, // South Africa 0-1 Canada
   74:{home:2,away:1},
   75:{home:1,away:1,penWinner:'Paraguay'},
   76:{home:1,away:1,penWinner:'Morocco'},
@@ -3212,6 +3212,13 @@ async function sbFetch(path, options = {}) {
 let scores = {};
 let currentId = Math.max(...Object.keys(PRESET_SCORES).map(Number));
 let activeTab = 'score';
+
+// Track which matches have been manually scored (vs just preset)
+const MANUALLY_SCORED = new Set(Object.keys(PRESET_SCORES).map(Number));
+
+function isManuallyScored(matchId) {
+  return MANUALLY_SCORED.has(matchId);
+}
 
 // Merge preset scores
 Object.keys(PRESET_SCORES).forEach(id => { scores[id] = PRESET_SCORES[id]; });
@@ -3531,6 +3538,7 @@ function enterScore() {
   }
   saveScores();
   saveScoreToSupabase(currentId);
+  MANUALLY_SCORED.add(currentId);
   updateScoreDisplay();
   buildMatchSelect();
   render();
@@ -3699,7 +3707,7 @@ function renderEditPicks() {
   container.innerHTML = '';
 
   const filtered = MATCHES.filter(m => {
-    const isScored = !!scores[m.id];
+    const isScored = isManuallyScored(m.id);
     if (!epShowScored && isScored) return false;
     if (epFilter === 'complete') return epIsComplete(m.id);
     if (epFilter === 'incomplete') return !epIsComplete(m.id);
@@ -3713,7 +3721,7 @@ function renderEditPicks() {
   }
 
   filtered.forEach(m => {
-    const isScored = !!scores[m.id];
+    const isScored = isManuallyScored(m.id);
     const filled = PLAYERS.filter(p => PICKS[m.id] && PICKS[m.id][p]).length;
     const complete = epIsComplete(m.id);
     const block = document.createElement('div');
@@ -4076,6 +4084,7 @@ async function init() {
       sbScores.forEach(s => {
         scores[s.match_id] = { home: s.home, away: s.away };
         if (s.pen_winner) scores[s.match_id].penWinner = s.pen_winner;
+        MANUALLY_SCORED.add(s.match_id);
       });
     }
   } catch(e) { console.warn('Could not load scores from Supabase', e); }
