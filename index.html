@@ -245,58 +245,6 @@ select {
 .ep-btn-save:hover { background:#f5e05a; }
 .ep-save-status { font-size:12px; color:#27ae60; font-weight:700; opacity:0; transition:opacity 0.3s; }
 .ep-save-status.show { opacity:1; }
-
-/* ── MOBILE (phone only, desktop unchanged) ── */
-@media (max-width: 600px) {
-  .control-panel { padding:10px 12px; gap:6px; flex-wrap:wrap; }
-  .cp-title { font-size:13px; }
-  .stage-nav { gap:2px; }
-  .stage-btn { padding:4px 7px; font-size:9px; }
-  select { padding:5px 8px; font-size:12px; max-width:140px; }
-  .score-input { width:36px; font-size:15px; padding:5px 0; }
-  .btn-enter { padding:6px 10px; font-size:11px; }
-  .btn-clear { padding:5px 8px; font-size:10px; }
-  .btn-nav { padding:5px 8px; font-size:12px; }
-
-  .tabs { padding:10px 8px 0; gap:2px; flex-wrap:wrap; }
-  .tab-btn { padding:7px 9px; font-size:9px; letter-spacing:0; }
-
-  .card-area { padding:0 8px 24px; }
-  .top-bar { padding:14px 14px 10px; }
-  .badge { font-size:10px; padding:5px 12px; }
-  .title-box { margin:0 8px 12px; padding:14px 10px; }
-  .title-box h1 { font-size:18px; }
-  .match-num { font-size:11px; }
-  .section-hdr { font-size:10px; padding:9px; letter-spacing:1.5px; }
-
-  .picks-grid-3 { grid-template-columns:1fr; }
-  .picks-grid-2 { grid-template-columns:1fr; }
-  .option-col { border-right:none !important; border-bottom:1px solid #1e2a45; padding:12px 14px; }
-  .option-col:last-child { border-bottom:none; }
-  .option-title { font-size:12px; }
-  .voter { font-size:13px; }
-  .pts-banner { font-size:16px; }
-
-  .score-row { gap:6px; }
-  .score-box { font-size:20px; padding:6px 14px; }
-
-  .standing-row { padding:8px 12px; gap:6px; }
-  .s-rank { font-size:11px; min-width:22px; }
-  .s-name { font-size:12px; }
-  .s-pts { font-size:10px; padding:2px 8px; }
-
-  .lb-card { border-radius:10px; }
-  .lb-top-bar { padding:14px 14px 10px; }
-  .lb-title-box { margin:0 8px 10px; padding:14px 10px; }
-  .lb-title-box h1 { font-size:22px; }
-  .lb-row { padding:10px 12px; gap:6px; }
-  .lb-rank { font-size:12px; min-width:22px; }
-  .lb-name { font-size:13px; }
-  .lb-pill { font-size:11px; padding:4px 10px; }
-
-  .ep-picks-grid { grid-template-columns:1fr 1fr; }
-  .ep-header { flex-direction:column; align-items:flex-start; gap:8px; }
-}
 </style>
 </head>
 <body style="background: rgb(13, 17, 23);">
@@ -346,7 +294,2268 @@ select {
 </div>
 
 <!-- ── CARD AREA (screenshot this) ── -->
-<div class="card-area" id="card-area"></div>
+<div class="card-area" id="card-area">
+      <div class="card">
+        <div class="ep-header">
+          <div>
+            <div class="ep-title">✏️ Edit Picks</div>
+            <div class="ep-hint">Fill in votes via dropdowns &amp; save · or keep sending Claude screenshots — both work</div>
+          </div>
+          <button class="btn-download" onclick="epDownload()">⬇️ Download Updated File</button>
+        </div>
+        <div class="ep-progress">
+          <span class="prog-label">Picks filled</span>
+          <div class="prog-bar-wrap"><div class="prog-bar" id="ep-prog-bar" style="width: 5%;"></div></div>
+          <span class="prog-count" id="ep-prog-count">11 / 220 upcoming matches</span>
+        </div>
+        <div class="ep-filter-row">
+          <button class="ep-filter-btn active" onclick="epSetFilter('all',this)">All</button>
+          <button class="ep-filter-btn" onclick="epSetFilter('incomplete',this)">Missing Votes</button>
+          <button class="ep-filter-btn" onclick="epSetFilter('complete',this)">Complete</button>
+          <button class="ep-filter-btn" onclick="epToggleScored(this)" style="margin-left:auto;">👁 Show Scored Matches</button>
+        </div>
+        <div id="ep-matches-list"><div class="ep-match-block" data-match="85">
+      <div class="ep-match-label" onclick="epToggleMatch(85)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M85</span>
+          <div>
+            <div class="ep-match-teams">🇨🇭 Switzerland vs Algeria 🇩🇿</div>
+            <div class="ep-match-date">Fri, Jul 3 · 07:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#27ae60;font-weight:700;">
+            ✅ All in
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select voted-home" data-match="85" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland" selected="">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select voted-away" data-match="85" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria" selected="">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select voted-away" data-match="85" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria" selected="">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select voted-away" data-match="85" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria" selected="">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select voted-home" data-match="85" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland" selected="">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select voted-home" data-match="85" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland" selected="">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select voted-home" data-match="85" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland" selected="">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select voted-home" data-match="85" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland" selected="">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select voted-home" data-match="85" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland" selected="">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select voted-away" data-match="85" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria" selected="">🇩🇿 Algeria</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select voted-home" data-match="85" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Switzerland" selected="">🇨🇭 Switzerland</option>
+                
+                <option value="Algeria">🇩🇿 Algeria</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(85)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="86">
+      <div class="ep-match-label" onclick="epToggleMatch(86)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M86</span>
+          <div>
+            <div class="ep-match-teams">🇦🇺 Australia vs Egypt 🇪🇬</div>
+            <div class="ep-match-date">Fri, Jul 3 · 22:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="86" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Australia">🇦🇺 Australia</option>
+                
+                <option value="Egypt">🇪🇬 Egypt</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(86)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="87">
+      <div class="ep-match-label" onclick="epToggleMatch(87)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M87</span>
+          <div>
+            <div class="ep-match-teams">🇦🇷 Argentina vs Cabo Verde 🇨🇻</div>
+            <div class="ep-match-date">Sat, Jul 4 · 02:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="87" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(87)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="88">
+      <div class="ep-match-label" onclick="epToggleMatch(88)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M88</span>
+          <div>
+            <div class="ep-match-teams">🇨🇴 Colombia vs Ghana 🇬🇭</div>
+            <div class="ep-match-date">Sat, Jul 4 · 05:30 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="88" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Colombia">🇨🇴 Colombia</option>
+                
+                <option value="Ghana">🇬🇭 Ghana</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(88)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="89">
+      <div class="ep-match-label" onclick="epToggleMatch(89)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M89</span>
+          <div>
+            <div class="ep-match-teams">🇨🇦 Canada vs Morocco 🇲🇦</div>
+            <div class="ep-match-date">Sat, Jul 4 · 21:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="89" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                
+                <option value="Morocco">🇲🇦 Morocco</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(89)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="90">
+      <div class="ep-match-label" onclick="epToggleMatch(90)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M90</span>
+          <div>
+            <div class="ep-match-teams">🇵🇾 Paraguay vs France 🇫🇷</div>
+            <div class="ep-match-date">Sun, Jul 5 · 01:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="90" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Paraguay">🇵🇾 Paraguay</option>
+                
+                <option value="France">🇫🇷 France</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(90)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="91">
+      <div class="ep-match-label" onclick="epToggleMatch(91)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M91</span>
+          <div>
+            <div class="ep-match-teams">🇧🇷 Brazil vs Norway 🇳🇴</div>
+            <div class="ep-match-date">Mon, Jul 6 · 00:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="91" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                
+                <option value="Norway">🇳🇴 Norway</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(91)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="92">
+      <div class="ep-match-label" onclick="epToggleMatch(92)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M92</span>
+          <div>
+            <div class="ep-match-teams">🇲🇽 Mexico vs England 🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+            <div class="ep-match-date">Mon, Jul 6 · 04:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="92" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Mexico">🇲🇽 Mexico</option>
+                
+                <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(92)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="93">
+      <div class="ep-match-label" onclick="epToggleMatch(93)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M93</span>
+          <div>
+            <div class="ep-match-teams">🇵🇹 Portugal vs Spain 🇪🇸</div>
+            <div class="ep-match-date">Mon, Jul 6 · 23:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="93" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Portugal">🇵🇹 Portugal</option>
+                
+                <option value="Spain">🇪🇸 Spain</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(93)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="94">
+      <div class="ep-match-label" onclick="epToggleMatch(94)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M94</span>
+          <div>
+            <div class="ep-match-teams">🇺🇸 USA vs Belgium 🇧🇪</div>
+            <div class="ep-match-date">Tue, Jul 7 · 04:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="94" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="USA">🇺🇸 USA</option>
+                
+                <option value="Belgium">🇧🇪 Belgium</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(94)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="95">
+      <div class="ep-match-label" onclick="epToggleMatch(95)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M95</span>
+          <div>
+            <div class="ep-match-teams">🇦🇷 Argentina vs TBD </div>
+            <div class="ep-match-date">Tue, Jul 7 · 20:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="95" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="Argentina">🇦🇷 Argentina</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(95)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="96">
+      <div class="ep-match-label" onclick="epToggleMatch(96)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M96</span>
+          <div>
+            <div class="ep-match-teams"> TBD vs TBD </div>
+            <div class="ep-match-date">Wed, Jul 8 · 04:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="96" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(96)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="97">
+      <div class="ep-match-label" onclick="epToggleMatch(97)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M97</span>
+          <div>
+            <div class="ep-match-teams"> W89 vs W90 </div>
+            <div class="ep-match-date">Thu, Jul 10 · 00:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="97" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W89"> W89</option>
+                
+                <option value="W90"> W90</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(97)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="98">
+      <div class="ep-match-label" onclick="epToggleMatch(98)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M98</span>
+          <div>
+            <div class="ep-match-teams"> W91 vs W92 </div>
+            <div class="ep-match-date">Thu, Jul 10 · 21:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="98" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W91"> W91</option>
+                
+                <option value="W92"> W92</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(98)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="99">
+      <div class="ep-match-label" onclick="epToggleMatch(99)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M99</span>
+          <div>
+            <div class="ep-match-teams"> W93 vs W94 </div>
+            <div class="ep-match-date">Fri, Jul 11 · 23:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="99" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W93"> W93</option>
+                
+                <option value="W94"> W94</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(99)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="100">
+      <div class="ep-match-label" onclick="epToggleMatch(100)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M100</span>
+          <div>
+            <div class="ep-match-teams"> W95 vs W96 </div>
+            <div class="ep-match-date">Sat, Jul 12 · 04:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="100" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W95"> W95</option>
+                
+                <option value="W96"> W96</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(100)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="101">
+      <div class="ep-match-label" onclick="epToggleMatch(101)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M101</span>
+          <div>
+            <div class="ep-match-teams"> W97 vs W98 </div>
+            <div class="ep-match-date">Tue, Jul 15 · 00:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="101" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W97"> W97</option>
+                
+                <option value="W98"> W98</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(101)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="102">
+      <div class="ep-match-label" onclick="epToggleMatch(102)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M102</span>
+          <div>
+            <div class="ep-match-teams"> W99 vs W100 </div>
+            <div class="ep-match-date">Wed, Jul 16 · 00:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="102" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="W99"> W99</option>
+                
+                <option value="W100"> W100</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(102)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="103">
+      <div class="ep-match-label" onclick="epToggleMatch(103)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M103</span>
+          <div>
+            <div class="ep-match-teams"> TBD vs TBD </div>
+            <div class="ep-match-date">Sat, Jul 19 · 21:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="103" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(103)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div><div class="ep-match-block" data-match="104">
+      <div class="ep-match-label" onclick="epToggleMatch(104)">
+        <div class="ep-match-label-left">
+          <span class="ep-num-badge">M104</span>
+          <div>
+            <div class="ep-match-teams"> TBD vs TBD </div>
+            <div class="ep-match-date">Sun, Jul 20 · 23:00 </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:#f59e0b;font-weight:700;">
+            0/11
+          </span>
+          <span class="ep-chevron">▼</span>
+        </div>
+      </div>
+      <div class="ep-picks-table">
+        
+        <div class="ep-picks-grid">
+          <div class="ep-player-pick">
+              <span class="ep-player-name">Ahmad</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Ahmad" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Joelle</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Joelle" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Mais</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Mais" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">May</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="May" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Zeina</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Zeina" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Berenger</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Berenger" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Munir</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Munir" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Sami</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Sami" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Bashar</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Bashar" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Aya</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Aya" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div><div class="ep-player-pick">
+              <span class="ep-player-name">Ola</span>
+              <select class="ep-pick-select unset" data-match="104" data-player="Ola" onchange="epUpdateSelectColor(this)">
+                <option value="">— pick —</option>
+                <option value="TBD"> TBD</option>
+                
+                <option value="TBD"> TBD</option>
+              </select>
+            </div>
+        </div>
+        <div class="ep-save-row">
+          <button class="ep-btn-save" onclick="epSaveMatch(104)">Save &amp; View Vote Lock ↗</button>
+        </div>
+      </div></div></div>
+      </div></div>
 
 <script>
 // ══════════════════════════════════════════════
@@ -910,7 +3119,7 @@ const PRESET_SCORES = {
   70:{home:3,away:1},
   71:{home:3,away:3},
   72:{home:1,away:3},
-  73:{home:0,away:1}, // South Africa 0-1 Canada
+  73:{home:0,away:1},
   74:{home:2,away:1},
   75:{home:1,away:1,penWinner:'Paraguay'},
   76:{home:1,away:1,penWinner:'Morocco'},
@@ -921,46 +3130,22 @@ const PRESET_SCORES = {
   81:{home:3,away:2},
   82:{home:2,away:0},
   83:{home:3,away:0},
-  84:{home:2,away:1}
+  84:{home:2,away:1},
+  85:{home:1,away:2}
 };
-
-// ══════════════════════════════════════════════
-//  SUPABASE CONFIG
-// ══════════════════════════════════════════════
-const SUPABASE_URL = 'https://laarjhtibnmnrvjwtvuw.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhYXJqaHRpYm5tbnJ2and0dnV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwNDI0OTYsImV4cCI6MjA5ODYxODQ5Nn0.QfPG5NAQGybQlDEe2t_XBOk0K806wg3WcCMhcxVh064';
-
-async function sbFetch(path, options = {}) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    ...options,
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'resolution=merge-duplicates',
-      ...options.headers
-    }
-  });
-  if (!res.ok) { console.error('Supabase error:', await res.text()); return null; }
-  return res.status === 204 ? null : res.json();
-}
 
 // ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
-let scores = {};
+let scores = JSON.parse(localStorage.getItem('wc2026_scores') || '{}');
 let currentId = Math.max(...Object.keys(PRESET_SCORES).map(Number));
 let activeTab = 'score';
 
-// Track which matches have been manually scored (vs just preset)
-const MANUALLY_SCORED = new Set(Object.keys(PRESET_SCORES).map(Number));
-
-function isManuallyScored(matchId) {
-  return MANUALLY_SCORED.has(matchId);
-}
-
-// Merge preset scores
-Object.keys(PRESET_SCORES).forEach(id => { scores[id] = PRESET_SCORES[id]; });
+// Merge preset scores in (don't overwrite user entries)
+Object.keys(PRESET_SCORES).forEach(id => {
+  if (!scores[id]) scores[id] = PRESET_SCORES[id];
+});
+saveScores();
 
 // ══════════════════════════════════════════════
 //  HELPERS
@@ -972,6 +3157,7 @@ function getWinner(id) {
   const m = getMatch(id);
   if (s.home > s.away) return m.home;
   if (s.away > s.home) return m.away;
+  // Drawn after 90 mins — check for penalty winner (knockout only)
   if (isKnockout(id) && s.penWinner) return s.penWinner;
   return 'Draw';
 }
@@ -1096,24 +3282,7 @@ function totalMatchesPlayed() {
   return Object.keys(scores).length;
 }
 
-function saveScores() {
-  // localStorage fallback
-  localStorage.setItem('wc2026_scores', JSON.stringify(scores));
-}
-
-async function saveScoreToSupabase(matchId) {
-  const s = scores[matchId];
-  if (!s) return;
-  await sbFetch('scores', {
-    method: 'POST',
-    body: JSON.stringify({
-      match_id: matchId,
-      home: s.home,
-      away: s.away,
-      pen_winner: s.penWinner || null
-    })
-  });
-}
+function saveScores() { localStorage.setItem('wc2026_scores', JSON.stringify(scores)); }
 
 // Group voters by pick for a match
 function groupByPick(matchId) {
@@ -1159,7 +3328,7 @@ const STAGES = {
 };
 let currentStage = 'GS';
 
-function setStage(stage, silent = false) {
+function setStage(stage) {
   currentStage = stage;
   const s = STAGES[stage];
 
@@ -1191,19 +3360,16 @@ function setStage(stage, silent = false) {
     activeBtn.classList.add('active');
   }
 
-  localStorage.setItem('wc2026_stage', stage);
   buildMatchSelect();
   updateNavButtons();
-  if (!silent) {
-    // Jump to last scored in stage, or first match
-    const stageMatches = MATCHES.filter(m => m.id >= s.ids[0] && m.id <= s.ids[1]);
-    const lastScored = stageMatches.filter(m => scores[m.id]).pop();
-    const firstMatch = stageMatches[0];
-    if (lastScored) currentId = lastScored.id;
-    else if (firstMatch) currentId = firstMatch.id;
-    updateScoreDisplay();
-    render();
-  }
+  // Jump to last scored in stage, or first match
+  const stageMatches = MATCHES.filter(m => m.id >= s.ids[0] && m.id <= s.ids[1]);
+  const lastScored = stageMatches.filter(m => scores[m.id]).pop();
+  const firstMatch = stageMatches[0];
+  if (lastScored) currentId = lastScored.id;
+  else if (firstMatch) currentId = firstMatch.id;
+  updateScoreDisplay();
+  render();
 }
 
 function navMatch(dir) {
@@ -1213,7 +3379,6 @@ function navMatch(dir) {
   const newIdx = idx + dir;
   if (newIdx < 0 || newIdx >= stageMatches.length) return;
   currentId = stageMatches[newIdx].id;
-  localStorage.setItem('wc2026_match', currentId);
   document.getElementById('match-select').value = currentId;
   updateScoreDisplay();
   updateNavButtons();
@@ -1260,7 +3425,6 @@ function updateScoreDisplay() {
 
 function selectMatch(id) {
   currentId = parseInt(id);
-  localStorage.setItem('wc2026_match', currentId);
   updateScoreDisplay();
   updateNavButtons();
   render();
@@ -1276,8 +3440,6 @@ function enterScore() {
     scores[currentId].penWinner = penWinner;
   }
   saveScores();
-  saveScoreToSupabase(currentId);
-  MANUALLY_SCORED.add(currentId);
   updateScoreDisplay();
   buildMatchSelect();
   render();
@@ -1322,54 +3484,6 @@ function epUpdateSelectColor(sel) {
   else sel.classList.add('voted-away');
 }
 
-function epSaveMatch(matchId) {
-  if (!PICKS[matchId]) PICKS[matchId] = {};
-  const block = document.querySelector(`.ep-match-block[data-match="${matchId}"]`);
-  const toSave = [];
-  PLAYERS.forEach(p => {
-    const sel = block.querySelector(`.ep-pick-select[data-player="${p}"]`);
-    if (sel) {
-      PICKS[matchId][p] = sel.value || undefined;
-      epUpdateSelectColor(sel);
-      if (sel.value) toSave.push({ id: `${matchId}_${p}`, match_id: matchId, player: p, pick: sel.value });
-    }
-  });
-  if (toSave.length) sbFetch('picks', { method: 'POST', body: JSON.stringify(toSave) });
-  epUpdateProgress();
-  buildMatchSelect();
-  // Show inline saved confirmation
-  const btn = block.querySelector('.ep-btn-save');
-  const orig = btn.textContent;
-  btn.textContent = '✅ Saved!';
-  btn.style.background = '#27ae60';
-  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
-}
-
-function epSaveAllAndView() {
-  // Save all open/filled matches then go to vote lock of the last saved
-  let lastSaved = null;
-  document.querySelectorAll('.ep-match-block').forEach(block => {
-    const matchId = parseInt(block.dataset.match);
-    if (!PICKS[matchId]) PICKS[matchId] = {};
-    const toSave = [];
-    PLAYERS.forEach(p => {
-      const sel = block.querySelector(`.ep-pick-select[data-player="${p}"]`);
-      if (sel && sel.value) {
-        PICKS[matchId][p] = sel.value;
-        toSave.push({ id: `${matchId}_${p}`, match_id: matchId, player: p, pick: sel.value });
-        lastSaved = matchId;
-      }
-    });
-    if (toSave.length) sbFetch('picks', { method: 'POST', body: JSON.stringify(toSave) });
-  });
-  epUpdateProgress();
-  buildMatchSelect();
-  if (lastSaved) {
-    currentId = lastSaved;
-    switchTab('votelock');
-  }
-}
-
 function epFillAll(matchId, pick) {
   const block = document.querySelector(`.ep-match-block[data-match="${matchId}"]`);
   if (!block) return;
@@ -1377,6 +3491,23 @@ function epFillAll(matchId, pick) {
     sel.value = pick;
     epUpdateSelectColor(sel);
   });
+}
+
+function epSaveMatch(matchId) {
+  if (!PICKS[matchId]) PICKS[matchId] = {};
+  const block = document.querySelector(`.ep-match-block[data-match="${matchId}"]`);
+  PLAYERS.forEach(p => {
+    const sel = block.querySelector(`.ep-pick-select[data-player="${p}"]`);
+    if (sel) {
+      PICKS[matchId][p] = sel.value || undefined;
+      epUpdateSelectColor(sel);
+    }
+  });
+  epUpdateProgress();
+  buildMatchSelect();
+  // Auto-jump to Vote Lock for this match
+  currentId = matchId;
+  switchTab('votelock');
 }
 
 function epToggleMatch(matchId) {
@@ -1432,7 +3563,7 @@ function epDownload() {
   URL.revokeObjectURL(a.href);
 }
 
-let epShowScored = true;
+let epShowScored = false;
 
 function epToggleScored(btn) {
   epShowScored = !epShowScored;
@@ -1486,9 +3617,9 @@ function renderEditPicks() {
         ${isScored ? '<div style="padding:6px 0 10px;font-size:11px;color:#f59e0b;font-weight:700;">⚠️ This match is already scored — edits here won\'t affect the scoreboard</div>' : ''}
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #1e2a45;">
           <span style="font-size:11px;color:#8892a4;font-weight:700;align-self:center;">All vote:</span>
-          <button onclick="epFillAll(${m.id},'${m.home}')" style="background:#1e2a45;color:${t.accent};border:1px solid ${t.accent};border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">${m.hf} ${m.home}</button>
+          <button onclick="epFillAll(${m.id},'${m.home}')" style="background:#1e2a45;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">${m.hf} ${m.home}</button>
           ${!isKnockout(m.id) ? `<button onclick="epFillAll(${m.id},'Draw')" style="background:#1e2a45;color:#f59e0b;border:1px solid #f59e0b;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">🤝 Draw</button>` : ''}
-          <button onclick="epFillAll(${m.id},'${m.away}')" style="background:#1e2a45;color:${t.accent};border:1px solid ${t.accent};border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">${m.af} ${m.away}</button>
+          <button onclick="epFillAll(${m.id},'${m.away}')" style="background:#1e2a45;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">${m.af} ${m.away}</button>
         </div>
         <div class="ep-picks-grid">
           ${PLAYERS.map(p => {
@@ -1506,7 +3637,7 @@ function renderEditPicks() {
           }).join('')}
         </div>
         <div class="ep-save-row">
-          <button class="ep-btn-save" onclick="epSaveMatch(${m.id})">💾 Save</button>
+          <button class="ep-btn-save" onclick="epSaveMatch(${m.id})">Save & View Vote Lock ↗</button>
         </div>
       </div>`;
     container.appendChild(block);
@@ -1698,12 +3829,9 @@ function render() {
         <div class="ep-header">
           <div>
             <div class="ep-title">✏️ Edit Picks</div>
-            <div class="ep-hint">Fill picks across multiple matches, then Save All</div>
+            <div class="ep-hint">Fill in votes via dropdowns & save · or keep sending Claude screenshots — both work</div>
           </div>
-          <div style="display:flex;gap:8px;">
-            <button class="ep-btn-save" onclick="epSaveAllAndView()" style="background:#27ae60;padding:10px 18px;">✅ Save All & View</button>
-            <button class="btn-download" onclick="epDownload()">⬇️ Download</button>
-          </div>
+          <button class="btn-download" onclick="epDownload()">⬇️ Download Updated File</button>
         </div>
         <div class="ep-progress">
           <span class="prog-label">Picks filled</span>
@@ -1714,7 +3842,7 @@ function render() {
           <button class="ep-filter-btn active" onclick="epSetFilter('all',this)">All</button>
           <button class="ep-filter-btn" onclick="epSetFilter('incomplete',this)">Missing Votes</button>
           <button class="ep-filter-btn" onclick="epSetFilter('complete',this)">Complete</button>
-          <button class="ep-filter-btn" onclick="epToggleScored(this)" style="margin-left:auto;">🙈 Hide Scored Matches</button>
+          <button class="ep-filter-btn" onclick="epToggleScored(this)" style="margin-left:auto;">👁 Show Scored Matches</button>
         </div>
         <div id="ep-matches-list"></div>
       </div>`;
@@ -1727,14 +3855,6 @@ function saveBonusPick(player, field, value) {
   if (!BONUS_PICKS[player]) BONUS_PICKS[player] = {};
   BONUS_PICKS[player][field] = value;
   localStorage.setItem('wc2026_bonus', JSON.stringify(BONUS_PICKS));
-  sbFetch('bonus_picks', {
-    method: 'POST',
-    body: JSON.stringify({
-      player: player,
-      winner: BONUS_PICKS[player].winner || null,
-      finalist: BONUS_PICKS[player].finalist1 || null
-    })
-  });
 }
 
 // Load bonus picks from localStorage on init
@@ -1815,62 +3935,10 @@ function renderBonus() {
 }
 
 // ── INIT ──
-async function init() {
-  // Load scores from Supabase
-  try {
-    const sbScores = await sbFetch('scores?select=*');
-    if (sbScores) {
-      sbScores.forEach(s => {
-        scores[s.match_id] = { home: s.home, away: s.away };
-        if (s.pen_winner) scores[s.match_id].penWinner = s.pen_winner;
-        MANUALLY_SCORED.add(s.match_id);
-      });
-    }
-  } catch(e) { console.warn('Could not load scores from Supabase', e); }
-
-  // Load picks from Supabase
-  try {
-    const sbPicks = await sbFetch('picks?select=*');
-    if (sbPicks) {
-      sbPicks.forEach(p => {
-        if (!PICKS[p.match_id]) PICKS[p.match_id] = {};
-        PICKS[p.match_id][p.player] = p.pick;
-      });
-    }
-  } catch(e) { console.warn('Could not load picks from Supabase', e); }
-
-  // Load bonus picks from Supabase
-  try {
-    const sbBonus = await sbFetch('bonus_picks?select=*');
-    if (sbBonus) {
-      sbBonus.forEach(b => {
-        BONUS_PICKS[b.player] = { winner: b.winner, finalist1: b.finalist };
-      });
-    }
-  } catch(e) { console.warn('Could not load bonus picks from Supabase', e); }
-
-  // Restore last stage and match
-  const lastStage = localStorage.getItem('wc2026_stage') || 'GS';
-  const lastMatch = parseInt(localStorage.getItem('wc2026_match')) || null;
-
-  setStage(lastStage, true);
-
-  // Override currentId after setStage sets it
-  if (lastMatch) {
-    const s = STAGES[lastStage];
-    if (s && lastMatch >= s.ids[0] && lastMatch <= s.ids[1]) {
-      currentId = lastMatch;
-      const sel = document.getElementById('match-select');
-      if (sel) sel.value = currentId;
-    }
-  }
-
-  updateScoreDisplay();
-  updateNavButtons();
-  render();
-}
-
-init();
+setStage('GS');
+updateScoreDisplay();
+updateNavButtons();
+render();
 </script>
 
 
