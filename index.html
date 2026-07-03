@@ -3135,6 +3135,29 @@ const PRESET_SCORES = {
 };
 
 // ══════════════════════════════════════════════
+//  SUPABASE (picks only)
+// ══════════════════════════════════════════════
+const SB_URL = 'https://laarjhtibnmnrvjwtvuw.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhYXJqaHRpYm5tbnJ2and0dnV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwNDI0OTYsImV4cCI6MjA5ODYxODQ5Nn0.QfPG5NAQGybQlDEe2t_XBOk0K806wg3WcCMhcxVh064';
+
+async function sbFetch(path, options = {}) {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+      ...options,
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates',
+        ...options.headers
+      }
+    });
+    if (!res.ok) return null;
+    return res.status === 204 ? null : res.json();
+  } catch(e) { return null; }
+}
+
+// ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
 let scores = JSON.parse(localStorage.getItem('wc2026_scores') || '{}');
@@ -3496,16 +3519,19 @@ function epFillAll(matchId, pick) {
 function epSaveMatch(matchId) {
   if (!PICKS[matchId]) PICKS[matchId] = {};
   const block = document.querySelector(`.ep-match-block[data-match="${matchId}"]`);
+  const toSave = [];
   PLAYERS.forEach(p => {
     const sel = block.querySelector(`.ep-pick-select[data-player="${p}"]`);
     if (sel) {
       PICKS[matchId][p] = sel.value || undefined;
       epUpdateSelectColor(sel);
+      if (sel.value) toSave.push({ id: `${matchId}_${p}`, match_id: matchId, player: p, pick: sel.value });
     }
   });
+  // Save to Supabase
+  if (toSave.length) sbFetch('picks', { method: 'POST', body: JSON.stringify(toSave) });
   epUpdateProgress();
   buildMatchSelect();
-  // Auto-jump to Vote Lock for this match
   currentId = matchId;
   switchTab('votelock');
 }
@@ -3935,10 +3961,24 @@ function renderBonus() {
 }
 
 // ── INIT ──
-setStage('GS');
-updateScoreDisplay();
-updateNavButtons();
-render();
+async function init() {
+  // Load picks from Supabase
+  try {
+    const sbPicks = await sbFetch('picks?select=*');
+    if (sbPicks && sbPicks.length) {
+      sbPicks.forEach(p => {
+        if (!PICKS[p.match_id]) PICKS[p.match_id] = {};
+        PICKS[p.match_id][p.player] = p.pick;
+      });
+    }
+  } catch(e) {}
+
+  setStage('GS');
+  updateScoreDisplay();
+  updateNavButtons();
+  render();
+}
+init();
 </script>
 
 
