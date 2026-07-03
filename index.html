@@ -364,7 +364,7 @@ select {
           <button class="ep-filter-btn active" onclick="epSetFilter('all',this)">All</button>
           <button class="ep-filter-btn" onclick="epSetFilter('incomplete',this)">Missing Votes</button>
           <button class="ep-filter-btn" onclick="epSetFilter('complete',this)">Complete</button>
-          <button class="ep-filter-btn" onclick="epToggleScored(this)" style="margin-left:auto;">👁 Show Scored Matches</button>
+          <button class="ep-filter-btn" onclick="epToggleScored(this)" style="margin-left:auto;">🙈 Hide Scored Matches</button>
         </div>
         <div id="ep-matches-list"><div class="ep-match-block" data-match="85">
       <div class="ep-match-label" onclick="epToggleMatch(85)">
@@ -3693,7 +3693,7 @@ function epDownload() {
   URL.revokeObjectURL(a.href);
 }
 
-let epShowScored = false;
+let epShowScored = true;
 
 function epToggleScored(btn) {
   epShowScored = !epShowScored;
@@ -3707,7 +3707,7 @@ function renderEditPicks() {
   container.innerHTML = '';
 
   const filtered = MATCHES.filter(m => {
-    const isScored = isManuallyScored(m.id);
+    const isScored = !!scores[m.id];
     if (!epShowScored && isScored) return false;
     if (epFilter === 'complete') return epIsComplete(m.id);
     if (epFilter === 'incomplete') return !epIsComplete(m.id);
@@ -3721,7 +3721,7 @@ function renderEditPicks() {
   }
 
   filtered.forEach(m => {
-    const isScored = isManuallyScored(m.id);
+    const isScored = !!scores[m.id];
     const filled = PLAYERS.filter(p => PICKS[m.id] && PICKS[m.id][p]).length;
     const complete = epIsComplete(m.id);
     const block = document.createElement('div');
@@ -3975,7 +3975,7 @@ function render() {
           <button class="ep-filter-btn active" onclick="epSetFilter('all',this)">All</button>
           <button class="ep-filter-btn" onclick="epSetFilter('incomplete',this)">Missing Votes</button>
           <button class="ep-filter-btn" onclick="epSetFilter('complete',this)">Complete</button>
-          <button class="ep-filter-btn" onclick="epToggleScored(this)" style="margin-left:auto;">👁 Show Scored Matches</button>
+          <button class="ep-filter-btn" onclick="epToggleScored(this)" style="margin-left:auto;">🙈 Hide Scored Matches</button>
         </div>
         <div id="ep-matches-list"></div>
       </div>`;
