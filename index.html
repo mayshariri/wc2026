@@ -2664,8 +2664,8 @@ const MATCHES = [
   {id:92,  home:'Mexico',    away:'England',  hf:'🇲🇽',af:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', date:'Mon, Jul 6',  time:'04:00', group:'R16', round:'R16'},
   {id:93,  home:'Portugal',  away:'Spain',    hf:'🇵🇹',af:'🇪🇸', date:'Mon, Jul 6',  time:'23:00', group:'R16', round:'R16'},
   {id:94,  home:'USA',       away:'Belgium',  hf:'🇺🇸',af:'🇧🇪', date:'Tue, Jul 7',  time:'04:00', group:'R16', round:'R16'},
-  {id:95,  home:'Argentina', away:'TBD',      hf:'🇦🇷',af:'', date:'Tue, Jul 7',  time:'20:00', group:'R16', round:'R16'},
-  {id:96,  home:'TBD',       away:'TBD',      hf:'',   af:'', date:'Wed, Jul 8',  time:'04:00', group:'R16', round:'R16'},
+  {id:95,  home:'Argentina', away:'Egypt',    hf:'🇦🇷',af:'🇪🇬', date:'Tue, Jul 7',  time:'20:00', group:'R16', round:'R16'},
+  {id:96,  home:'Switzerland', away:'Colombia', hf:'🇨🇭',af:'🇨🇴', date:'Wed, Jul 8',  time:'04:00', group:'R16', round:'R16'},
   // ── QUARTER-FINALS (M97–M100) · 3 pts — Jul 9–11 ──
   {id:97,  home:'W89',  away:'W90',  hf:'',af:'', date:'Thu, Jul 10', time:'00:00', group:'QF',  round:'QF'},
   {id:98,  home:'W91',  away:'W92',  hf:'',af:'', date:'Thu, Jul 10', time:'21:00', group:'QF',  round:'QF'},
@@ -3123,7 +3123,7 @@ const PRESET_SCORES = {
   74:{home:2,away:1},
   75:{home:1,away:1,penWinner:'Paraguay'},
   76:{home:1,away:1,penWinner:'Morocco'},
-  77:{home:1,away:2},
+  77:{home:2,away:1},
   78:{home:3,away:0},
   79:{home:2,away:0},
   80:{home:2,away:1},
@@ -3131,7 +3131,10 @@ const PRESET_SCORES = {
   82:{home:2,away:0},
   83:{home:3,away:0},
   84:{home:2,away:1},
-  85:{home:1,away:2}
+  85:{home:2,away:0},
+  86:{home:1,away:1,penWinner:'Egypt'},
+  87:{home:3,away:2},
+  88:{home:1,away:0}
 };
 
 // ══════════════════════════════════════════════
@@ -3883,16 +3886,6 @@ function saveBonusPick(player, field, value) {
   localStorage.setItem('wc2026_bonus', JSON.stringify(BONUS_PICKS));
 }
 
-// Load bonus picks from localStorage on init
-(function() {
-  const saved = localStorage.getItem('wc2026_bonus');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      Object.assign(BONUS_PICKS, parsed);
-    } catch(e) {}
-  }
-})();
 
 function renderBonus() {
   const t = getStageTheme(currentId);
@@ -3962,7 +3955,7 @@ function renderBonus() {
 
 // ── INIT ──
 async function init() {
-  // Load picks from Supabase
+  // Load picks from Supabase — these override hardcoded PICKS
   try {
     const sbPicks = await sbFetch('picks?select=*');
     if (sbPicks && sbPicks.length) {
@@ -3971,6 +3964,12 @@ async function init() {
         PICKS[p.match_id][p.player] = p.pick;
       });
     }
+  } catch(e) {}
+
+  // Load bonus picks from localStorage
+  try {
+    const saved = localStorage.getItem('wc2026_bonus');
+    if (saved) Object.assign(BONUS_PICKS, JSON.parse(saved));
   } catch(e) {}
 
   setStage('GS');
