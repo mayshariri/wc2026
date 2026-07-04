@@ -3923,11 +3923,11 @@ function renderBonus() {
       <span class="s-rank" style="min-width:90px;color:${t.accent};font-size:13px;font-weight:800">${player}</span>
       <div style="flex:1;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <select onchange="saveBonusPick('${player}','winner',this.value)" style="background:#252d4a;color:#cdd6f4;border:1px solid #1e2a45;border-radius:8px;padding:5px 8px;font-size:12px;font-family:inherit;flex:1;min-width:120px">
-          <option value="">🏆 Winner...</option>
+          <option value="">— select winner —</option>
           ${remaining.map(t => `<option value="${t}" ${winnerPick===t?'selected':''}>${t}</option>`).join('')}
         </select>
         <select onchange="saveBonusPick('${player}','finalist1',this.value)" style="background:#252d4a;color:#cdd6f4;border:1px solid #1e2a45;border-radius:8px;padding:5px 8px;font-size:12px;font-family:inherit;flex:1;min-width:120px">
-          <option value="">🎯 Other finalist...</option>
+          <option value="">— select finalist —</option>
           ${remaining.map(t => `<option value="${t}" ${finalist===t?'selected':''}>${t}</option>`).join('')}
         </select>
         <span style="font-size:11px;color:#8892a4;white-space:nowrap">${winnerStatus} ${finalistStatus}</span>
@@ -3948,6 +3948,13 @@ function renderBonus() {
       🎯 Both finalists correct → <span style="color:${t.accent}">+2 pts</span>
     </div>
     <div class="section-hdr" style="background:${t.hdrBg};color:${t.hdrText}">everyone's picks — edit directly below</div>
+    <div style="display:flex;align-items:center;padding:8px 22px;gap:8px;border-bottom:1px solid #1e2a45;background:#111827;">
+      <span style="min-width:90px;font-size:10px;color:#4b5563;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Player</span>
+      <div style="flex:1;display:flex;gap:8px;">
+        <span style="flex:1;min-width:120px;font-size:10px;color:${t.accent};text-transform:uppercase;letter-spacing:1px;font-weight:700;">🏆 Winner</span>
+        <span style="flex:1;min-width:120px;font-size:10px;color:${t.accent};text-transform:uppercase;letter-spacing:1px;font-weight:700;">🎯 Finalist</span>
+      </div>
+    </div>
     ${rows}
     <div class="card-footer" style="color:${t.footerColor}">WC2026 Betting Game ⚽</div>
   </div>`;
