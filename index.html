@@ -3486,6 +3486,11 @@ function enterScore() {
     scores[currentId].penWinner = penWinner;
   }
   saveScores();
+  // Save to Supabase
+  sbFetch('scores', {
+    method: 'POST',
+    body: JSON.stringify({ match_id: currentId, home: h, away: a, pen_winner: penWinner || null })
+  });
   updateScoreDisplay();
   buildMatchSelect();
   render();
@@ -3494,6 +3499,8 @@ function enterScore() {
 function clearScore() {
   delete scores[currentId];
   saveScores();
+  // Delete from Supabase
+  sbFetch(`scores?match_id=eq.${currentId}`, { method: 'DELETE' });
   updateScoreDisplay();
   buildMatchSelect();
   render();
@@ -3982,6 +3989,17 @@ function renderBonus() {
 
 // ── INIT ──
 async function init() {
+  // Load scores from Supabase — these override PRESET_SCORES
+  try {
+    const sbScores = await sbFetch('scores?select=*');
+    if (sbScores && sbScores.length) {
+      sbScores.forEach(s => {
+        scores[s.match_id] = { home: s.home, away: s.away };
+        if (s.pen_winner) scores[s.match_id].penWinner = s.pen_winner;
+      });
+    }
+  } catch(e) {}
+
   // Load picks from Supabase — these override hardcoded PICKS
   try {
     const sbPicks = await sbFetch('picks?select=*');
