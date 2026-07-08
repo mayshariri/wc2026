@@ -2667,10 +2667,10 @@ const MATCHES = [
   {id:95,  home:'Argentina', away:'Egypt',    hf:'🇦🇷',af:'🇪🇬', date:'Tue, Jul 7',  time:'20:00', group:'R16', round:'R16'},
   {id:96,  home:'Switzerland', away:'Colombia', hf:'🇨🇭',af:'🇨🇴', date:'Wed, Jul 8',  time:'04:00', group:'R16', round:'R16'},
   // ── QUARTER-FINALS (M97–M100) · 3 pts — Jul 9–11 ──
-  {id:97,  home:'W89',  away:'W90',  hf:'',af:'', date:'Thu, Jul 10', time:'00:00', group:'QF',  round:'QF'},
-  {id:98,  home:'W91',  away:'W92',  hf:'',af:'', date:'Thu, Jul 10', time:'21:00', group:'QF',  round:'QF'},
-  {id:99,  home:'W93',  away:'W94',  hf:'',af:'', date:'Fri, Jul 11', time:'23:00', group:'QF',  round:'QF'},
-  {id:100, home:'W95',  away:'W96',  hf:'',af:'', date:'Sat, Jul 12', time:'04:00', group:'QF',  round:'QF'},
+  {id:97,  home:'France',    away:'Morocco',      hf:'🇫🇷',af:'🇲🇦', date:'Fri, Jul 10', time:'00:00', group:'QF',  round:'QF'},
+  {id:98,  home:'Spain',     away:'Belgium',      hf:'🇪🇸',af:'🇧🇪', date:'Thu, Jul 10', time:'23:00', group:'QF',  round:'QF'},
+  {id:99,  home:'Norway',    away:'England',      hf:'🇳🇴',af:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', date:'Sun, Jul 12', time:'01:00', group:'QF',  round:'QF'},
+  {id:100, home:'Argentina', away:'Switzerland',  hf:'🇦🇷',af:'🇨🇭', date:'Sun, Jul 12', time:'05:00', group:'QF',  round:'QF'},
   // ── SEMI-FINALS (M101–M102) · 4 pts — Jul 14–15 ──
   {id:101, home:'W97',  away:'W98',  hf:'',af:'', date:'Tue, Jul 15', time:'00:00', group:'SF',  round:'SF'},
   {id:102, home:'W99',  away:'W100', hf:'',af:'', date:'Wed, Jul 16', time:'00:00', group:'SF',  round:'SF'},
@@ -3085,7 +3085,24 @@ const PICKS = {
     Mais:'Colombia', Joelle:'Colombia', Ahmad:'Colombia', May:'Colombia', Zeina:'Colombia',
     Berenger:'Colombia', Munir:'Colombia', Sami:'Colombia', Bashar:'Colombia', Aya:'Colombia', Ola:'Colombia'
   },
-  95: {
+  91: {
+    Ahmad:'Brazil', Joelle:'Brazil', May:'Brazil', Zeina:'Brazil', Berenger:'Brazil',
+    Munir:'Brazil', Sami:'Brazil', Aya:'Brazil', Ola:'Brazil',
+    Mais:'Norway', Bashar:'Norway'
+  },
+  92: {
+    Ahmad:'England', Mais:'England', May:'England', Zeina:'England', Berenger:'England',
+    Munir:'England', Sami:'England', Aya:'England',
+    Joelle:'Mexico', Bashar:'Mexico', Ola:'Mexico'
+  },
+  93: {
+    Ahmad:'Spain', Joelle:'Spain', Mais:'Spain', Berenger:'Spain', Bashar:'Spain',
+    May:'Portugal', Zeina:'Portugal', Munir:'Portugal', Sami:'Portugal', Aya:'Portugal', Ola:'Portugal'
+  },
+  94: {
+    Ahmad:'USA', Joelle:'USA', Mais:'USA', Berenger:'USA', Ola:'USA',
+    May:'Belgium', Zeina:'Belgium', Munir:'Belgium', Sami:'Belgium', Bashar:'Belgium', Aya:'Belgium'
+  },
     Ahmad:'Argentina', Mais:'Argentina', May:'Argentina', Zeina:'Argentina', Berenger:'Argentina',
     Munir:'Argentina', Sami:'Argentina', Bashar:'Argentina', Aya:'Argentina', Ola:'Argentina',
     Joelle:'Egypt'
@@ -3219,6 +3236,8 @@ const PRESET_SCORES = {
   91:{home:1,away:2}, // Brazil 1-2 Norway
   92:{home:2,away:3}, // Mexico 2-3 England
   93:{home:0,away:1}, // Portugal 0-1 Spain
+  95:{home:3,away:2}, // Argentina 3-2 Egypt
+  96:{home:0,away:0,penWinner:'Switzerland'}, // Switzerland 0-0 Colombia (PSO 4-3)
 };
 
 // ══════════════════════════════════════════════
