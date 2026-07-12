@@ -2241,47 +2241,95 @@ function renderBonus() {
   const champion  = getWinner(104);
   const finalistsKnown = finalist1 && finalist1 !== 'TBD';
 
-  // R16 teams still in tournament for dropdowns
+  // Teams still alive (SF teams = potential finalists)
+  const stillAlive = new Set(['France', 'Spain', 'England', 'Argentina']);
+  // If final teams are known, only those two are alive
+  if (finalistsKnown) { stillAlive.clear(); stillAlive.add(finalist1); stillAlive.add(finalist2); }
+
   const remaining = [
     'Canada','Morocco','Paraguay','France','Brazil','Norway',
     'Mexico','England','Portugal','Spain','USA','Belgium',
     'Argentina','Colombia','Algeria','Australia','Egypt','Ghana'
   ].sort();
 
-  const rows = PLAYERS.map((player, i) => {
+  // ── Per-player pick status ──
+  const playerData = PLAYERS.map(player => {
     const b = BONUS_PICKS[player] || {};
-    const bonusPts = getBonusPoints(player);
     const winnerPick = b.winner || '';
-    const finalist = b.finalist1 || '';
+    const finalistPick = b.finalist1 || '';
 
-    let winnerStatus = '';
+    const winnerAlive = stillAlive.has(winnerPick);
+    const finalistAlive = stillAlive.has(finalistPick);
+    const bothAlive = winnerAlive && finalistAlive;
+
+    let winnerStatus = '', winnerPts = 0;
     if (winnerPick && finalistsKnown) {
-      if (champion && winnerPick === champion) winnerStatus = '✅ +3';
-      else if (winnerPick === finalist1 || winnerPick === finalist2) winnerStatus = '🟡 +2';
+      if (champion && winnerPick === champion) { winnerStatus = '✅ +3'; winnerPts = 3; }
+      else if (winnerPick === finalist1 || winnerPick === finalist2) { winnerStatus = '🟡 +2'; winnerPts = 2; }
       else winnerStatus = '❌ +0';
+    } else if (winnerPick && !finalistsKnown) {
+      winnerStatus = winnerAlive ? '🟢 still in' : '❌ out';
     }
-    let finalistStatus = '';
-    if (finalist && finalistsKnown) {
-      const pred = new Set([winnerPick, finalist]);
-      finalistStatus = (pred.has(finalist1) && pred.has(finalist2)) ? '✅ +2' : '❌ +0';
+
+    let finalistStatus = '', finalistPts = 0;
+    if (finalistPick && finalistsKnown) {
+      const pred = new Set([winnerPick, finalistPick]);
+      if (pred.has(finalist1) && pred.has(finalist2)) { finalistStatus = '✅ +2'; finalistPts = 2; }
+      else finalistStatus = '❌ +0';
+    } else if (finalistPick && !finalistsKnown) {
+      finalistStatus = finalistAlive ? '🟢 still in' : '❌ out';
     }
+
+    const totalBonus = winnerPts + finalistPts;
+    return { player, winnerPick, finalistPick, winnerAlive, finalistAlive, bothAlive, winnerStatus, finalistStatus, totalBonus };
+  });
+
+  // ── Picks rows ──
+  const rows = playerData.map((d, i) => {
+    const winnerColor = d.winnerPick ? (d.winnerAlive ? '#27ae60' : '#e74c3c') : '#8892a4';
+    const finalistColor = d.finalistPick ? (d.finalistAlive ? '#27ae60' : '#e74c3c') : '#8892a4';
 
     return `<div class="standing-row ${i%2===1?'alt':''}">
-      <span class="s-rank" style="min-width:90px;color:${t.accent};font-size:13px;font-weight:800">${player}</span>
+      <span class="s-rank" style="min-width:90px;color:${t.accent};font-size:13px;font-weight:800">${d.player}</span>
       <div style="flex:1;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <select onchange="saveBonusPick('${player}','winner',this.value)" style="background:#252d4a;color:#cdd6f4;border:1px solid #1e2a45;border-radius:8px;padding:5px 8px;font-size:12px;font-family:inherit;flex:1;min-width:120px">
-          <option value="">— select winner —</option>
-          ${remaining.map(t => `<option value="${t}" ${winnerPick===t?'selected':''}>${t}</option>`).join('')}
-        </select>
-        <select onchange="saveBonusPick('${player}','finalist1',this.value)" style="background:#252d4a;color:#cdd6f4;border:1px solid #1e2a45;border-radius:8px;padding:5px 8px;font-size:12px;font-family:inherit;flex:1;min-width:120px">
-          <option value="">— select finalist —</option>
-          ${remaining.map(t => `<option value="${t}" ${finalist===t?'selected':''}>${t}</option>`).join('')}
-        </select>
-        <span style="font-size:11px;color:#8892a4;white-space:nowrap">${winnerStatus} ${finalistStatus}</span>
+        <div style="flex:1;min-width:120px">
+          <div style="font-size:11px;color:#8892a4;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px">🏆 Winner</div>
+          <div style="font-size:13px;font-weight:700;color:${winnerColor}">${d.winnerPick || '—'} <span style="font-size:11px">${d.winnerStatus}</span></div>
+        </div>
+        <div style="flex:1;min-width:120px">
+          <div style="font-size:11px;color:#8892a4;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px">🎯 Finalist</div>
+          <div style="font-size:13px;font-weight:700;color:${finalistColor}">${d.finalistPick || '—'} <span style="font-size:11px">${d.finalistStatus}</span></div>
+        </div>
       </div>
-      ${bonusPts > 0 ? `<span class="s-pts gold-pill">+${bonusPts} pts</span>` : '<span class="s-pts white-pill">—</span>'}
+      ${d.totalBonus > 0 ? `<span class="s-pts gold-pill">+${d.totalBonus} pts</span>` : d.bothAlive ? `<span class="s-pts" style="background:#1a3a2a;color:#27ae60;padding:3px 10px;border-radius:10px;font-size:11px">🔥 alive</span>` : '<span class="s-pts white-pill">—</span>'}
     </div>`;
   }).join('');
+
+  // ── Bonus Points Dashboard ──
+  const withPoints = playerData.filter(d => d.totalBonus > 0).sort((a,b) => b.totalBonus - a.totalBonus);
+  const withChance = playerData.filter(d => d.totalBonus === 0 && d.bothAlive);
+  const eliminated = playerData.filter(d => d.totalBonus === 0 && !d.bothAlive && (d.winnerPick || d.finalistPick));
+
+  const dashboardRows = [
+    ...withPoints.map(d => `
+      <div class="lb-row lb-leader">
+        <span class="lb-rank" style="color:${t.accent}">${d.player}</span>
+        <span class="lb-name" style="font-size:12px;color:#cdd6f4">🏆 ${d.winnerPick} · 🎯 ${d.finalistPick}</span>
+        <span class="lb-pill green">+${d.totalBonus} pts</span>
+      </div>`),
+    ...withChance.map(d => `
+      <div class="lb-row">
+        <span class="lb-rank" style="color:#27ae60">${d.player}</span>
+        <span class="lb-name" style="font-size:12px;color:#cdd6f4">🏆 ${d.winnerPick} · 🎯 ${d.finalistPick}</span>
+        <span class="lb-pill" style="background:#1a3a2a;color:#27ae60;font-size:11px">🔥 still in</span>
+      </div>`),
+    ...eliminated.map(d => `
+      <div class="lb-row" style="opacity:0.5">
+        <span class="lb-rank" style="color:#e74c3c">${d.player}</span>
+        <span class="lb-name" style="font-size:12px;color:#8892a4;text-decoration:line-through">🏆 ${d.winnerPick} · 🎯 ${d.finalistPick}</span>
+        <span class="lb-pill" style="background:#2d0e0e;color:#e74c3c;font-size:11px">❌ out</span>
+      </div>`)
+  ].join('');
 
   return `<div class="lb-card">
     <div class="lb-top-bar">
@@ -2289,19 +2337,13 @@ function renderBonus() {
       <span class="badge" style="background:${t.badgeBg};color:${t.badgeText}">Bonus Picks</span>
     </div>
     <div class="lb-title-box" style="border-color:${t.accent}"><h1>⭐ Bonus Points</h1></div>
-    <div class="section-hdr" style="background:${t.hdrBg};color:${t.hdrText}">scoring</div>
     <div style="padding:14px 22px;font-size:13px;color:#8892a4;border-bottom:1px solid #1e2a45;line-height:1.8">
       🏆 Winner reaches final → <span style="color:${t.accent}">+2 pts</span> · Winner wins cup → <span style="color:#27ae60">+3 pts</span><br>
       🎯 Both finalists correct → <span style="color:${t.accent}">+2 pts</span>
     </div>
-    <div class="section-hdr" style="background:${t.hdrBg};color:${t.hdrText}">everyone's picks — edit directly below</div>
-    <div style="display:flex;align-items:center;padding:8px 22px;gap:8px;border-bottom:1px solid #1e2a45;background:#111827;">
-      <span style="min-width:90px;font-size:10px;color:#4b5563;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Player</span>
-      <div style="flex:1;display:flex;gap:8px;">
-        <span style="flex:1;min-width:120px;font-size:10px;color:${t.accent};text-transform:uppercase;letter-spacing:1px;font-weight:700;">🏆 Winner</span>
-        <span style="flex:1;min-width:120px;font-size:10px;color:${t.accent};text-transform:uppercase;letter-spacing:1px;font-weight:700;">🎯 Finalist</span>
-      </div>
-    </div>
+    <div class="section-hdr" style="background:${t.hdrBg};color:${t.hdrText}">bonus dashboard</div>
+    ${dashboardRows || '<div class="info-box">No points awarded yet.</div>'}
+    <div class="section-hdr" style="background:${t.hdrBg};color:${t.hdrText}">all picks</div>
     ${rows}
     <div class="card-footer" style="color:${t.footerColor}">WC2026 Betting Game ⚽</div>
   </div>`;
