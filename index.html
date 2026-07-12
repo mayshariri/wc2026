@@ -2442,23 +2442,6 @@ function renderBonus() {
       </div>`)
   ].join('');
 
-  return `<div class="lb-card">
-    <div class="lb-top-bar">
-      <span class="wc-label" style="color:${t.accent}">FIFA World Cup 2026</span>
-      <span class="badge" style="background:${t.badgeBg};color:${t.badgeText}">Bonus Picks</span>
-    </div>
-    <div class="lb-title-box" style="border-color:${t.accent}"><h1>⭐ Bonus Points</h1></div>
-    <div style="padding:14px 22px;font-size:13px;color:#8892a4;border-bottom:1px solid #1e2a45;line-height:1.8">
-      🏆 Winner reaches final → <span style="color:${t.accent}">+2 pts</span> · Winner wins cup → <span style="color:#27ae60">+3 pts</span><br>
-      🎯 Both finalists correct → <span style="color:${t.accent}">+2 pts</span>
-    </div>
-    <div class="section-hdr" style="background:${t.hdrBg};color:${t.hdrText}">bonus dashboard</div>
-    ${dashboardRows || '<div class="info-box">No points awarded yet.</div>'}
-    <div class="section-hdr" style="background:${t.hdrBg};color:${t.hdrText}">all picks</div>
-    ${rows}
-    <div class="card-footer" style="color:${t.footerColor}">WC2026 Betting Game ⚽</div>
-  </div>`;
-}
 
 // ── INIT ──
 async function init() {
