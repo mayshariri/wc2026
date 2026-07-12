@@ -2257,6 +2257,101 @@ function renderBonus() {
   const champion  = getWinner(104);
   const finalistsKnown = finalist1 && finalist1 !== 'TBD';
 
+  // Teams still in the tournament (SF teams)
+  const stillAlive = new Set(['France', 'Spain', 'England', 'Argentina']);
+  if (finalistsKnown) { stillAlive.clear(); stillAlive.add(finalist1); stillAlive.add(finalist2); }
+
+  // ── Per-player status ──
+  const playerData = PLAYERS.map(player => {
+    const b = BONUS_PICKS[player] || {};
+    const winnerPick = b.winner || '';
+    const finalistPick = b.finalist1 || '';
+    const winnerAlive = stillAlive.has(winnerPick);
+
+    // Points: only possible if winner is still alive
+    let pts = 0;
+    let status = '';
+
+    if (!winnerPick) {
+      status = 'no pick';
+    } else if (!winnerAlive) {
+      // Winner is out — 0 points no matter what
+      status = 'eliminated';
+    } else if (finalistsKnown && champion) {
+      // Final has been played
+      if (winnerPick === champion) {
+        pts += 3;
+        const pred = new Set([winnerPick, finalistPick]);
+        if (pred.has(finalist1) && pred.has(finalist2)) pts += 2;
+        status = 'winner';
+      } else if (winnerPick === finalist1 || winnerPick === finalist2) {
+        pts += 2;
+        const pred = new Set([winnerPick, finalistPick]);
+        if (pred.has(finalist1) && pred.has(finalist2)) pts += 2;
+        status = 'finalist';
+      }
+    } else if (finalistsKnown && !champion) {
+      // Final teams known, game not played yet
+      if (winnerPick === finalist1 || winnerPick === finalist2) {
+        status = 'in final';
+      } else {
+        status = 'eliminated';
+      }
+    } else {
+      // Still in SFs
+      status = 'alive';
+    }
+
+    return { player, winnerPick, finalistPick, winnerAlive, pts, status };
+  });
+
+  // ── Dashboard rows ──
+  const sorted = [...playerData].sort((a, b) => b.pts - a.pts);
+
+  const dashRows = sorted.map(d => {
+    let badge = '';
+    let nameStyle = 'color:#cdd6f4';
+    if (d.status === 'eliminated' || d.status === 'no pick') {
+      badge = `<span style="background:#2d0e0e;color:#e74c3c;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;">❌ Out</span>`;
+      nameStyle = 'color:#4b5563;text-decoration:line-through';
+    } else if (d.status === 'alive') {
+      badge = `<span style="background:#0e2d1a;color:#27ae60;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;">🔥 Alive</span>`;
+    } else if (d.status === 'in final') {
+      badge = `<span style="background:#1a2a40;color:#4A9FFF;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;">🏟 In Final</span>`;
+    } else if (d.pts > 0) {
+      badge = `<span class="lb-pill green">+${d.pts} pts</span>`;
+    }
+
+    return `<div class="lb-row ${d.pts > 0 ? 'lb-leader' : ''}">
+      <span class="lb-rank" style="color:${d.status==='eliminated'?'#e74c3c':d.pts>0?'#27ae60':t.accent}">${d.player}</span>
+      <span class="lb-name" style="font-size:12px;${nameStyle}">
+        🏆 ${d.winnerPick||'—'} · 🎯 ${d.finalistPick||'—'}
+      </span>
+      ${badge}
+    </div>`;
+  }).join('');
+
+  return `<div class="lb-card">
+    <div class="lb-top-bar">
+      <span class="wc-label" style="color:${t.accent}">FIFA World Cup 2026</span>
+      <span class="badge" style="background:${t.badgeBg};color:${t.badgeText}">Bonus Picks</span>
+    </div>
+    <div class="lb-title-box" style="border-color:${t.accent}"><h1>⭐ Bonus Points</h1></div>
+    <div style="padding:12px 22px;font-size:12px;color:#8892a4;border-bottom:1px solid #1e2a45;line-height:2">
+      🏆 Winner reaches final → <span style="color:${t.accent}">+2 pts</span> &nbsp;·&nbsp; Winner wins cup → <span style="color:#27ae60">+3 pts</span><br>
+      🎯 Both finalists correct → <span style="color:${t.accent}">+2 pts</span> &nbsp;·&nbsp; <span style="color:#e74c3c">Winner out = 0 pts regardless</span>
+    </div>
+    <div class="section-hdr" style="background:${t.hdrBg};color:${t.hdrText}">bonus standings</div>
+    ${dashRows}
+    <div class="card-footer" style="color:${t.footerColor}">WC2026 Betting Game ⚽</div>
+  </div>`;
+}
+  const t = getStageTheme(currentId);
+  const finalist1 = getMatch(104)?.home;
+  const finalist2 = getMatch(104)?.away;
+  const champion  = getWinner(104);
+  const finalistsKnown = finalist1 && finalist1 !== 'TBD';
+
   // Teams still alive (SF teams = potential finalists)
   const stillAlive = new Set(['France', 'Spain', 'England', 'Argentina']);
   // If final teams are known, only those two are alive
