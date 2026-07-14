@@ -1361,6 +1361,10 @@ const PICKS = {
     Joelle:'Switzerland', Mais:'Switzerland',
     Ahmad:'Argentina', May:'Argentina', Zeina:'Argentina', Berenger:'Argentina', Munir:'Argentina', Sami:'Argentina', Bashar:'Argentina', Aya:'Argentina', Ola:'Argentina'
   },
+  101: {
+    Ahmad:'Spain', Joelle:'Spain', Mais:'Spain', Sami:'Spain', Bashar:'Spain',
+    May:'France', Zeina:'France', Berenger:'France', Munir:'France', Aya:'France', Ola:'France'
+  },
   89: {
     Ahmad:'Morocco', Joelle:'Morocco', Mais:'Morocco', May:'Morocco', Zeina:'Morocco',
     Berenger:'Morocco', Munir:'Morocco', Sami:'Morocco', Aya:'Morocco', Ola:'Morocco',
@@ -2257,8 +2261,8 @@ function renderBonus() {
   const champion  = getWinner(104);
   const finalistsKnown = finalist1 && finalist1 !== 'TBD';
 
-  // Teams still in the tournament (SF teams)
-  const stillAlive = new Set(['France', 'Spain', 'England', 'Argentina']);
+  // Teams still in the tournament (Spain confirmed finalist, England/Argentina for M102)
+  const stillAlive = new Set(['Spain', 'England', 'Argentina']);
   if (finalistsKnown) { stillAlive.clear(); stillAlive.add(finalist1); stillAlive.add(finalist2); }
 
   // ── Per-player status ──
