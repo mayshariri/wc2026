@@ -907,9 +907,9 @@ const MATCHES = [
   {id:101, home:'France',  away:'Spain',     hf:'🇫🇷',af:'🇪🇸', date:'Tue, Jul 14', time:'23:00', group:'SF',  round:'SF'},
   {id:102, home:'England', away:'Argentina', hf:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',af:'🇦🇷', date:'Wed, Jul 15', time:'23:00', group:'SF',  round:'SF'},
   // ── 3RD PLACE (M103) · 5 pts — Jul 18 ──
-  {id:103, home:'France',  away:'TBD',  hf:'🇫🇷',af:'', date:'Sun, Jul 19', time:'01:00', group:'3RD', round:'3RD'},
+  {id:103, home:'France',  away:'England', hf:'🇫🇷',af:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', date:'Sun, Jul 19', time:'01:00', group:'3RD', round:'3RD'},
   // ── FINAL (M104) · 6 pts — Jul 19 ──
-  {id:104, home:'Spain',  away:'TBD',  hf:'🇪🇸',af:'', date:'Sun, Jul 19', time:'23:00', group:'FINAL', round:'FINAL'},
+  {id:104, home:'Spain',  away:'Argentina', hf:'🇪🇸',af:'🇦🇷', date:'Sun, Jul 19', time:'23:00', group:'FINAL', round:'FINAL'},
 ];
 
 // ── PICKS (all matches tracked) ──
@@ -1365,6 +1365,10 @@ const PICKS = {
     Ahmad:'Spain', Joelle:'Spain', Mais:'Spain', Sami:'Spain', Bashar:'Spain',
     May:'France', Zeina:'France', Berenger:'France', Munir:'France', Aya:'France', Ola:'France'
   },
+  102: {
+    Mais:'Argentina', Zeina:'Argentina', Munir:'Argentina', Bashar:'Argentina',
+    Ahmad:'England', Joelle:'England', May:'England', Berenger:'England', Sami:'England', Aya:'England', Ola:'England'
+  },
   89: {
     Ahmad:'Morocco', Joelle:'Morocco', Mais:'Morocco', May:'Morocco', Zeina:'Morocco',
     Berenger:'Morocco', Munir:'Morocco', Sami:'Morocco', Aya:'Morocco', Ola:'Morocco',
@@ -1626,21 +1630,25 @@ function getBonusPoints(player) {
   const b = BONUS_PICKS[player];
   if (!b) return 0;
   let pts = 0;
-  // Finalists come from M104 (the Final match)
   const finalMatch = getMatch(104);
   const finalist1 = finalMatch ? finalMatch.home : null;
   const finalist2 = finalMatch ? finalMatch.away : null;
   const champion  = getWinner(104);
-  // Finalist bonus: both finalists correct = +2
-  if (b.finalist1 && b.finalist2 && finalist1 && finalist2 && finalist1 !== 'TBD' && finalist2 !== 'TBD') {
-    const pred = new Set([b.finalist1, b.finalist2]);
-    if (pred.has(finalist1) && pred.has(finalist2)) pts += 2;
-  }
-  // Winner bonus: reached final = +2, won final = +3
-  if (b.winner && finalist1 && finalist1 !== 'TBD') {
+  const finalistsKnown = finalist1 && finalist1 !== 'TBD' && finalist2 && finalist2 !== 'TBD';
+
+  // Winner bonus: winner reached final = +2, won final = +3
+  if (b.winner && finalistsKnown) {
     if (champion && b.winner === champion) pts += 3;
     else if (b.winner === finalist1 || b.winner === finalist2) pts += 2;
   }
+
+  // Finalist bonus: picked both finalists correctly = +2
+  // b.finalist1 is the "other finalist" (not their winner)
+  if (b.winner && b.finalist1 && finalistsKnown) {
+    const pred = new Set([b.winner, b.finalist1]);
+    if (pred.has(finalist1) && pred.has(finalist2)) pts += 2;
+  }
+
   return pts;
 }
 
@@ -2261,8 +2269,8 @@ function renderBonus() {
   const champion  = getWinner(104);
   const finalistsKnown = finalist1 && finalist1 !== 'TBD';
 
-  // Teams still in the tournament (Spain confirmed finalist, England/Argentina for M102)
-  const stillAlive = new Set(['Spain', 'England', 'Argentina']);
+  // Spain and Argentina are confirmed finalists
+  const stillAlive = new Set(['Spain', 'Argentina']);
   if (finalistsKnown) { stillAlive.clear(); stillAlive.add(finalist1); stillAlive.add(finalist2); }
 
   // ── Per-player status ──
