@@ -1369,6 +1369,14 @@ const PICKS = {
     Mais:'Argentina', Zeina:'Argentina', Munir:'Argentina', Bashar:'Argentina',
     Ahmad:'England', Joelle:'England', May:'England', Berenger:'England', Sami:'England', Aya:'England', Ola:'England'
   },
+  103: {
+    Joelle:'France', Mais:'France', May:'France', Zeina:'France', Berenger:'France', Munir:'France', Sami:'France', Bashar:'France', Aya:'France',
+    Ahmad:'England', Ola:'England'
+  },
+  104: {
+    Mais:'Argentina', May:'Argentina', Zeina:'Argentina', Berenger:'Argentina', Sami:'Argentina', Bashar:'Argentina',
+    Ahmad:'Spain', Joelle:'Spain', Munir:'Spain', Aya:'Spain', Ola:'Spain'
+  },
   89: {
     Ahmad:'Morocco', Joelle:'Morocco', Mais:'Morocco', May:'Morocco', Zeina:'Morocco',
     Berenger:'Morocco', Munir:'Morocco', Sami:'Morocco', Aya:'Morocco', Ola:'Morocco',
@@ -1498,7 +1506,11 @@ const PRESET_SCORES = {
   97:{home:2,away:0},
   98:{home:2,away:1},
   99:{home:1,away:2},
-  100:{home:3,away:1}
+  100:{home:3,away:1},
+  101:{home:0,away:1}, // France 0-1 Spain
+  102:{home:1,away:2}, // England 1-2 Argentina
+  103:{home:2,away:1}, // France 2-1 England (3rd place)
+  104:{home:1,away:2}  // Spain 1-2 Argentina (Argentina wins WC!)
 };
 
 // ══════════════════════════════════════════════
@@ -2269,7 +2281,7 @@ function renderBonus() {
   const champion  = getWinner(104);
   const finalistsKnown = finalist1 && finalist1 !== 'TBD';
 
-  // Spain and Argentina are confirmed finalists
+  // Final played — Spain and Argentina were the finalists
   const stillAlive = new Set(['Spain', 'Argentina']);
   if (finalistsKnown) { stillAlive.clear(); stillAlive.add(finalist1); stillAlive.add(finalist2); }
 
