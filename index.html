@@ -1510,7 +1510,7 @@ const PRESET_SCORES = {
   101:{home:0,away:1}, // France 0-1 Spain
   102:{home:1,away:2}, // England 1-2 Argentina
   103:{home:2,away:1}, // France 2-1 England (3rd place)
-  104:{home:1,away:2}  // Spain 1-2 Argentina (Argentina wins WC!)
+  104:{home:2,away:1}  // Spain 2-1 Argentina (Spain wins WC!)
 };
 
 // ══════════════════════════════════════════════
@@ -1648,10 +1648,10 @@ function getBonusPoints(player) {
   const champion  = getWinner(104);
   const finalistsKnown = finalist1 && finalist1 !== 'TBD' && finalist2 && finalist2 !== 'TBD';
 
-  // Winner bonus: winner reached final = +2, won final = +3
+  // Winner bonus: reached final = +2, won final = additional +3
   if (b.winner && finalistsKnown) {
-    if (champion && b.winner === champion) pts += 3;
-    else if (b.winner === finalist1 || b.winner === finalist2) pts += 2;
+    if (b.winner === finalist1 || b.winner === finalist2) pts += 2; // reached final
+    if (champion && b.winner === champion) pts += 3; // won the cup
   }
 
   // Finalist bonus: picked both finalists correctly = +2
