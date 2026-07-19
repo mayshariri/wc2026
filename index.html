@@ -301,7 +301,10 @@ select {
             <div class="ep-title">✏️ Edit Picks</div>
             <div class="ep-hint">Fill in votes via dropdowns &amp; save · or keep sending Claude screenshots — both work</div>
           </div>
-          <button class="btn-download" onclick="epDownload()">⬇️ Download Updated File</button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-download" onclick="epDownload()">⬇️ Download</button>
+            <button onclick="debugExport()" style="background:#4A9FFF;color:#001830;border:none;border-radius:8px;padding:9px 14px;font-size:11px;font-weight:900;cursor:pointer;text-transform:uppercase;">🔍 Export Data</button>
+          </div>
         </div>
         <div class="ep-progress">
           <span class="prog-label">Picks filled</span>
@@ -1949,6 +1952,88 @@ function epUpdateProgress() {
   if (cnt) cnt.textContent = filled + ' / ' + total + ' upcoming matches';
 }
 
+function debugExport() {
+  const allScores = Object.assign({}, PRESET_SCORES, scores);
+
+  function getWinnerLocal(id) {
+    const s = allScores[id]; if (!s) return null;
+    const m = getMatch(id);
+    if (!m) return null;
+    if (s.home > s.away) return m.home;
+    if (s.away > s.home) return m.away;
+    if (isKnockout(id) && s.penWinner) return s.penWinner;
+    return 'Draw';
+  }
+
+  function ptsFor(id) {
+    if (id <= 72) return 1;
+    if (id <= 88) return 1.5;
+    if (id <= 96) return 2;
+    if (id <= 100) return 3;
+    if (id <= 102) return 4;
+    if (id === 103) return 5;
+    if (id === 104) return 6;
+    return 1;
+  }
+
+  const breakdown = {};
+  PLAYERS.forEach(p => { breakdown[p] = { total: 0, matches: [] }; });
+
+  MATCHES.forEach(m => {
+    const winner = getWinnerLocal(m.id);
+    const s = allScores[m.id];
+    if (!s || !winner) return;
+    const pts = ptsFor(m.id);
+    PLAYERS.forEach(p => {
+      const pick = PICKS[m.id]?.[p];
+      const correct = pick === winner;
+      breakdown[p].matches.push({
+        match: m.id,
+        home: m.home, away: m.away,
+        score: `${s.home}-${s.away}${s.penWinner ? ' (PSO '+s.penWinner+')' : ''}`,
+        winner, pick: pick || '—', correct,
+        pts: correct ? pts : 0
+      });
+      if (correct) breakdown[p].total += pts;
+    });
+  });
+
+  // Add bonus points
+  const finalMatch = getMatch(104);
+  const f1 = finalMatch?.home, f2 = finalMatch?.away;
+  const champ = getWinnerLocal(104);
+  PLAYERS.forEach(p => {
+    const b = BONUS_PICKS[p] || {};
+    let bonus = 0;
+    if (b.winner && f1 && f1 !== 'TBD') {
+      if (b.winner === f1 || b.winner === f2) bonus += 2;
+      if (champ && b.winner === champ) bonus += 3;
+    }
+    if (b.winner && b.finalist1 && f1 && f1 !== 'TBD') {
+      const pred = new Set([b.winner, b.finalist1]);
+      if (pred.has(f1) && pred.has(f2)) bonus += 2;
+    }
+    breakdown[p].bonus = bonus;
+    breakdown[p].bonusPick = `${b.winner || '—'} x ${b.finalist1 || '—'}`;
+    breakdown[p].grandTotal = breakdown[p].total + bonus;
+  });
+
+  const exportData = {
+    generated: new Date().toISOString(),
+    finalStandings: PLAYERS
+      .map(p => ({ player: p, total: breakdown[p].total, bonus: breakdown[p].bonus, grandTotal: breakdown[p].grandTotal, bonusPick: breakdown[p].bonusPick }))
+      .sort((a,b) => b.grandTotal - a.grandTotal),
+    matchBreakdown: breakdown
+  };
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'wc2026-data-export.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 function epDownload() {
   const allScores = Object.assign({}, PRESET_SCORES, scores);
   const scoresStr = Object.entries(allScores).map(([id, s]) => {
@@ -2247,7 +2332,10 @@ function render() {
             <div class="ep-title">✏️ Edit Picks</div>
             <div class="ep-hint">Fill in votes via dropdowns & save · or keep sending Claude screenshots — both work</div>
           </div>
-          <button class="btn-download" onclick="epDownload()">⬇️ Download Updated File</button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-download" onclick="epDownload()">⬇️ Download</button>
+            <button onclick="debugExport()" style="background:#4A9FFF;color:#001830;border:none;border-radius:8px;padding:9px 14px;font-size:11px;font-weight:900;cursor:pointer;text-transform:uppercase;">🔍 Export Data</button>
+          </div>
         </div>
         <div class="ep-progress">
           <span class="prog-label">Picks filled</span>
